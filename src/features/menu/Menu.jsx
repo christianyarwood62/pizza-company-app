@@ -18,4 +18,5 @@ export async function loader() {
   const menu = getMenu();
   return menu;
 }
+
 export default Menu;
