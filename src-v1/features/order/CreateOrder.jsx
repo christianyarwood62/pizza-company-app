@@ -90,8 +90,7 @@ function CreateOrder() {
 }
 
 export async function action({ request }) {
-  const formData = await request.formData();
-
+  const formData = await request.formData(); // these 2 lines are standard formula to follow to get data object
   const data = Object.fromEntries(formData);
 
   const order = {
@@ -106,7 +105,7 @@ export async function action({ request }) {
   if (!isValidPhone(order.phone))
     errors.phone = "Please give a valid phone number";
 
-  if (Object.keys(errors).length > 0) return errors;
+  if (Object.keys(errors).length > 0) return errors; // Object.keys(errors).length is used because this returns an array and
 
   // if everything is okay, then create the order and redirect to that orders page
   const newOrder = await createOrder(order);
