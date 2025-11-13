@@ -54,3 +54,13 @@ export const {
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
+
+/* Originally used in the CartOverview file, but redux recommends putting it here in the cart slice file
+because you may need to reuse this funciton somewhere else */
+export const getTotalCartQuantity = (state) =>
+  // Reduce by iterating through each item in cart and adding 1 to sum, starting at 0 initial value
+  state.cart.cart.reduce((sum, item) => sum + item.quantity, 0);
+
+export const getTotalCartPrice = (state) =>
+  // Reduce by iterating through each item in cart and adding 1 to sum, starting at 0 initial value
+  state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
