@@ -5,6 +5,7 @@ import CartItem from "./CartItem";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, getCart } from "./cartSlice";
 import { getUsername } from "../user/userSlice";
+import EmptyCart from "./EmptyCart";
 
 // const fakeCart = [
 //   {
@@ -37,6 +38,8 @@ function Cart() {
 
   // Gives access to the dispatch function for the cart reducer in cartSlice.js
   const dispatch = useDispatch();
+
+  if (cart.length === 0) return <EmptyCart />;
 
   return (
     <div className="px-4 py-3">
