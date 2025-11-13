@@ -1,4 +1,4 @@
-const API_URL = 'https://react-fast-pizza-api.jonas.io/api';
+const API_URL = "https://react-fast-pizza-api.jonas.io/api";
 
 export async function getMenu() {
   const res = await fetch(`${API_URL}/menu`);
@@ -7,6 +7,7 @@ export async function getMenu() {
   if (!res.ok) throw Error("Failed getting menu");
 
   const { data } = await res.json();
+  console.log(data);
   return data;
 }
 
@@ -14,7 +15,7 @@ export async function getOrder(id) {
   const res = await fetch(`${API_URL}/order/${id}`);
   if (!res.ok) throw Error(`Couldn't find order #${id}`);
 
-  const { data } = await res.json();
+  const { data } = await res.json(); // have to destructure data here because data is one of the keys returned from the api
   return data;
 }
 
