@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import CreateUser from "../features/user/CreateUser";
-import Button from "../../pizza-company-with-tailwind/src/ui/Button";
+import Button from "./Button";
 function Home() {
   const username = useSelector((state) => state.user.userName); // access the userName from the userSlice reducer
 
