@@ -134,14 +134,16 @@ function CreateOrder() {
 }
 
 export async function action({ request }) {
+  // these 2 lines are standard formula to follow to access the data from a form
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
 
   const order = {
     ...data,
     cart: JSON.parse(data.cart),
-    priority: data.priority === "on",
+    priority: data.priority === "true",
   };
+  console.log(order);
 
   const errors = {};
   if (!isValidPhone(order.phone))
