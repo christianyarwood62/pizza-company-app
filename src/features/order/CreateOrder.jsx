@@ -3,15 +3,18 @@ import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../../ui/Button";
 import { useSelector } from "react-redux";
-import { getCart } from "../cart/cartSlice";
+import { getCart, clearCart, getTotalCartPrice } from "../cart/cartSlice";
 import { getUsername } from "../user/userSlice";
 import EmptyCart from "../cart/EmptyCart";
+import store from "../../store";
+import { formatCurrency } from "../../utils/helpers";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(
     str
   );
+/* Originally used to display static components:
 
 const fakeCart = [
   {
@@ -36,6 +39,7 @@ const fakeCart = [
     totalPrice: 15,
   },
 ];
+*/
 
 function CreateOrder() {
   const username = useSelector(getUsername);
@@ -49,6 +53,11 @@ function CreateOrder() {
 
   // const [withPriority, setWithPriority] = useState(false);
   const cart = useSelector(getCart);
+
+  const totalCartPrice = useSelector(getTotalCartPrice);
+  const priorityPrice = 0;
+
+  const totalPrice = totalCartPrice + priorityPrice;
 
   // a length of 0 is falsy, so an empty cart array would return this EmptyCart component
   if (!cart.length) return <EmptyCart />;
@@ -111,7 +120,9 @@ function CreateOrder() {
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <Button disabled={isSubmitting} type="primary">
-            {isSubmitting ? "Placing order...." : "Order now"}
+            {isSubmitting
+              ? "Placing order...."
+              : `Order now for ${formatCurrency(totalPrice)}`}
           </Button>
         </div>
       </Form>
@@ -139,6 +150,10 @@ export async function action({ request }) {
   // If everything is okay, create new order and redirect
 
   const newOrder = await createOrder(order);
+
+  /* Because you cant use the useDispatch hook outside of functions, this is a hack to be able to access store reducer functions,
+  not good to over use this */
+  store.dispatch(clearCart());
 
   return redirect(`/order/${newOrder.id}`);
 }
