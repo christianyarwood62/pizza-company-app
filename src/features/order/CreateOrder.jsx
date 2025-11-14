@@ -42,6 +42,9 @@ const fakeCart = [
 */
 
 function CreateOrder() {
+  // need this state to be able to update the UI based on if the user selects priority ordering or not
+  const [withPriority, setWithPriority] = useState(false);
+
   const username = useSelector(getUsername);
   // Original way of accessing the state below, but above is a shortcut using an exported function from the slice file
   // const username = useSelector((state) => state.user.userName);
@@ -51,11 +54,11 @@ function CreateOrder() {
 
   const formErrors = useActionData();
 
-  // const [withPriority, setWithPriority] = useState(false);
   const cart = useSelector(getCart);
 
+  // Access the totalCartPrice from the cartSlice file to be able to add a priority price
   const totalCartPrice = useSelector(getTotalCartPrice);
-  const priorityPrice = 0;
+  const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
 
   const totalPrice = totalCartPrice + priorityPrice;
 
@@ -109,8 +112,8 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
+            value={withPriority}
+            onChange={(e) => setWithPriority(e.target.checked)}
           />
           <label htmlFor="priority" className="font-medium">
             Want to give your order priority?
