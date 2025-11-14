@@ -38,6 +38,8 @@ const cartSlice = createSlice({
       const item = state.cart.find((item) => item.pizzaId === action.payload);
       item.quantity--;
       item.totalPrice = item.quantity * item.unitPrice;
+
+      if (item.quantity === 0) cartSlice.caseReducers.deleteItem(state, action);
     },
     clearCart(state) {
       state.cart = []; // reset the cart back to nothing, empty array
@@ -69,4 +71,5 @@ export const getTotalCartPrice = (state) =>
 export const getCart = (state) => state.cart.cart;
 
 export const getCurrentQuantityById = (id) => (state) =>
+  // nullish-coalescing returns o when .quantity is undefined or item isnt found
   state.cart.cart.find((item) => item.pizzaId === id)?.quantity ?? 0;
