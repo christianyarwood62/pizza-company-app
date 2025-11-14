@@ -14,8 +14,7 @@ function CartItem({ item }) {
         <p className="text-sm font-bold">{formatCurrency(totalPrice)}</p>
         {/* need to pass this prop down so it knows which id to delete */}
 
-        <UpdateItemQuantity pizzaId={pizzaId} />
-
+        <UpdateItemQuantity pizzaId={pizzaId} currentQuantity={quantity} />
         <DeleteItem pizzaId={pizzaId} />
       </div>
     </li>
