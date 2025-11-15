@@ -45,9 +45,16 @@ function CreateOrder() {
   // need this state to be able to update the UI based on if the user selects priority ordering or not
   const [withPriority, setWithPriority] = useState(false);
 
-  const username = useSelector(getUsername);
-  // Original way of accessing the state below, but above is a shortcut using an exported function from the slice file
-  // const username = useSelector((state) => state.user.userName);
+  // access the user store and grab the whole state then destructure
+  const {
+    username,
+    status: addressStatus, // renaming status as addressStatus here
+    position,
+    address,
+  } = useSelector((state) => state.user);
+
+  // When getting position, if addressStatus from userSlice is loading, then this isLoadingAddress is true, to use in disabled prop
+  const isLoadingAddress = addressStatus === "loading";
 
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
@@ -70,7 +77,6 @@ function CreateOrder() {
     <div className="px-4 py-6">
       <h2 className="mb-8 text-xl font-semibold">Ready to order? Let's go!</h2>
 
-      <button onClick={() => dispatch(fetchAddress())}>Get Position</button>
       {/* <Form method="POST" action="/order/new"> */}
       <Form method="POST">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -96,7 +102,7 @@ function CreateOrder() {
           </div>
         </div>
 
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center relative">
           <label className="sm:basis-40">Address</label>
           <div className="grow">
             <input
@@ -104,8 +110,26 @@ function CreateOrder() {
               type="text"
               name="address"
               required
+              disabled={isLoadingAddress}
+              defaultValue={address} // defaultValue lets user edit this before sending
             />
           </div>
+          <span className="absolute right-[3px] z-50">
+            {!position.latitude &&
+              !position.longitude && ( // if position of user is known, then dont display the button
+                <Button
+                  type="small"
+                  disabled={isLoadingAddress}
+                  onClick={(e) => {
+                    // you want to prevent submitting the form, because this get getPosition button is meant to prepopulate the location input
+                    e.preventDefault();
+                    dispatch(fetchAddress());
+                  }}
+                >
+                  Get Position
+                </Button>
+              )}
+          </span>
         </div>
 
         <div className="mb-12 flex items-center gap-5">
@@ -124,7 +148,7 @@ function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <Button disabled={isSubmitting} type="primary">
+          <Button disabled={isSubmitting || isLoadingAddress} type="primary">
             {isSubmitting
               ? "Placing order...."
               : `Order now for ${formatCurrency(totalPrice)}`}
@@ -145,7 +169,6 @@ export async function action({ request }) {
     cart: JSON.parse(data.cart),
     priority: data.priority === "true",
   };
-  console.log(order);
 
   const errors = {};
   if (!isValidPhone(order.phone))

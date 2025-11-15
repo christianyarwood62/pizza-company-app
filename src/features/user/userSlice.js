@@ -7,6 +7,7 @@ function getPosition() {
   });
 }
 
+// You can export this thunk function to the desired component file to dispatch it, i.e. CreateOrder.jsx
 export const fetchAddress = createAsyncThunk(
   "user/fetchAddress",
   async function () {
@@ -54,7 +55,7 @@ const userSlice = createSlice({
       // when the thunk function correctly returns some values, it goes to a fulfilled state
       .addCase(fetchAddress.fulfilled, (state, action) => {
         // this is the reducer function
-        state.status = "loading";
+        state.status = "idle";
         state.position = action.payload.position;
         state.address = action.payload.address;
       })
