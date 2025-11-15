@@ -78,6 +78,9 @@ function Order() {
 }
 
 export async function loader({ params }) {
+  /* to get access to the URL and put it in the UI, cant use useParams (**because that hook has to go in a component**) 
+  - you have to use params prop in the loader function, so the order folder would have an Order component and a async function,
+  params searches the whole URL and matches orderId even if it is nestled into multiple locations, e.g.  index/order/something/:orderId */
   const order = await getOrder(params.orderId);
   return order;
 }

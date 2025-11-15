@@ -12,15 +12,8 @@ function Order() {
   const order = useLoaderData();
 
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
-  const {
-    id,
-    status,
-    priority,
-    priorityPrice,
-    orderPrice,
-    estimatedDelivery,
-    cart,
-  } = order;
+  const { status, priority, priorityPrice, orderPrice, estimatedDelivery } =
+    order;
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
   return (
