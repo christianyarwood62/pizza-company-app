@@ -51,6 +51,7 @@ function CreateOrder() {
     status: addressStatus, // renaming status as addressStatus here
     position,
     address,
+    error: errorAddress,
   } = useSelector((state) => state.user);
 
   // When getting position, if addressStatus from userSlice is loading, then this isLoadingAddress is true, to use in disabled prop
@@ -113,8 +114,13 @@ function CreateOrder() {
               disabled={isLoadingAddress}
               defaultValue={address} // defaultValue lets user edit this before sending
             />
+            {addressStatus === "error" && (
+              <p className="mt-2 rounded-md bg-red-100 p-2 text-xs text-red-700">
+                {errorAddress}
+              </p>
+            )}
           </div>
-          <span className="absolute right-[3px] z-50">
+          <span className="absolute right-[3px] top-[3px] md:right-[5px] md:top-[5px] z-50 top">
             {!position.latitude &&
               !position.longitude && ( // if position of user is known, then dont display the button
                 <Button

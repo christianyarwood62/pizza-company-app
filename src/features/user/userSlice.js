@@ -11,8 +11,19 @@ function getPosition() {
 export const fetchAddress = createAsyncThunk(
   "user/fetchAddress",
   async function () {
+    // This is a guard clause (not in lecture) to show error if user denies location access
+    const permission = await navigator.permissions.query({
+      name: "geolocation",
+    });
+
+    if (permission.state === "denied") {
+      // Force the thunk to reject
+      throw new Error("Location permission denied");
+    }
+
     // 1) We get the user's geolocation position
     const positionObj = await getPosition();
+    console.log("PositionObj:", positionObj);
     const position = {
       latitude: positionObj.coords.latitude,
       longitude: positionObj.coords.longitude,
@@ -63,7 +74,8 @@ const userSlice = createSlice({
       .addCase(fetchAddress.rejected, (state, action) => {
         // this is the reducer function
         state.status = "error";
-        state.error = action.error.message; // you can then conditionally render something to show this erro
+        state.error =
+          "There was a problem getting your addres, make sure to fill this field!"; // you can then conditionally render something to show this erro
       }),
 });
 
