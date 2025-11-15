@@ -2,16 +2,25 @@
 
 import OrderItem from "./OrderItem";
 
-import { useLoaderData } from "react-router-dom";
+import { useFetcher, useLoaderData } from "react-router-dom";
 import { getOrder } from "../../services/apiRestaurant";
 import {
   calcMinutesLeft,
   formatCurrency,
   formatDate,
 } from "../../utils/helpers";
+import { useEffect } from "react";
 
 function Order() {
   const order = useLoaderData();
+
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    // only fetches the data if data doesnt exist yet, were using this to pass ingredients as a prop to the OrderItem below.
+    // by default useFetcher is in idle state, it can have states just like navigation (e.g. idle, loading, or submitting)
+    if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu"); // this loads the menu route data without navigating to it
+  }, [fetcher]);
 
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
   const {
@@ -56,7 +65,15 @@ function Order() {
 
       <ul className="dive-stone-200 divide-y border-b border-t">
         {cart.map((item) => (
-          <OrderItem item={item} key={item.pizzaId} />
+          <OrderItem
+            item={item}
+            key={item.pizzaId}
+            isLoadingIngredients={fetcher.state === "loading"} // if fetcher is loading the menu data, it is loading, setting this prop as true
+            ingredients={
+              fetcher.data?.find((element) => element.id === item.pizzaId)
+                .ingredients ?? [] // Finds the corresponding item in the menu fetch data that matches this orderItem and grabs the ingredients
+            }
+          />
         ))}
       </ul>
 
