@@ -78,7 +78,7 @@ function CreateOrder() {
     <div className="px-4 py-6">
       <h2 className="mb-8 text-xl font-semibold">Ready to order? Let's go!</h2>
 
-      {/* <Form method="POST" action="/order/new"> */}
+      {/* This POST method sets the form to the router in App.jsx, links to the action loader below */}
       <Form method="POST">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
@@ -153,7 +153,17 @@ function CreateOrder() {
         </div>
 
         <div>
+          {/* Put hidden inputs as a trick to get the cart data into the order because user hasnt put that anywhere in the form */}
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
+          <input
+            type="hidden"
+            name="position"
+            value={
+              position.longitude && position.latitude
+                ? `${position.longitude},${position.latitude}`
+                : ""
+            }
+          />
           <Button disabled={isSubmitting || isLoadingAddress} type="primary">
             {isSubmitting
               ? "Placing order...."
@@ -165,6 +175,7 @@ function CreateOrder() {
   );
 }
 
+// export this action to the router in App.jsx
 export async function action({ request }) {
   // these 2 lines are standard formula to follow to access the data from a form
   const formData = await request.formData();
