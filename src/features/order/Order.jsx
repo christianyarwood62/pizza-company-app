@@ -10,6 +10,7 @@ import {
   formatDate,
 } from "../../utils/helpers";
 import { useEffect } from "react";
+import UpdateOrder from "./UpdateOrder";
 
 function Order() {
   const order = useLoaderData();
@@ -70,8 +71,9 @@ function Order() {
             key={item.pizzaId}
             isLoadingIngredients={fetcher.state === "loading"} // if fetcher is loading the menu data, it is loading, setting this prop as true
             ingredients={
+              // Finds the corresponding item in the menu fetch data that matches this orderItem and grabs the ingredients
               fetcher.data?.find((element) => element.id === item.pizzaId)
-                .ingredients ?? [] // Finds the corresponding item in the menu fetch data that matches this orderItem and grabs the ingredients
+                .ingredients ?? [] // Returns empty array if the left handside is null or undefined, so if the fetcher data doesnt exist yet
             }
           />
         ))}
@@ -90,6 +92,8 @@ function Order() {
           To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
         </p>
       </div>
+
+      {!priority && <UpdateOrder order={order} />}
     </div>
   );
 }

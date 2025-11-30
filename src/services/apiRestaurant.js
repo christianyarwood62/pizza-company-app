@@ -7,6 +7,7 @@ export async function getMenu() {
   if (!res.ok) throw Error("Failed getting menu");
 
   const { data } = await res.json();
+  console.log(data);
   return data;
 }
 
@@ -39,7 +40,8 @@ export async function createOrder(newOrder) {
 export async function updateOrder(id, updateObj) {
   try {
     const res = await fetch(`${API_URL}/order/${id}`, {
-      method: "PATCH",
+      method: "PATCH", // Patch only takes in the data that changes and update the data
+      // the other method for updating is PUT which requires the new whole object
       body: JSON.stringify(updateObj),
       headers: {
         "Content-Type": "application/json",

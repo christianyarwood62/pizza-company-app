@@ -22,7 +22,7 @@ const router = createBrowserRouter([
       {
         path: "/menu",
         element: <Menu />,
-        loader: menuLoader,
+        loader: menuLoader, // loaders run when you loan the route
         errorElement: <Error />,
       },
       {
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       {
         path: "/order/new",
         element: <CreateOrder />,
-        action: createOrderAction,
+        action: createOrderAction, // actions run when forms are submitted
       },
       {
         path: "/order/:orderId",
