@@ -7,6 +7,7 @@ function UpdateOrder({ order }) {
   const fetcher = useFetcher();
 
   return (
+    // Fetcher form allows you to fetch data without having to navigate to a different page
     <fetcher.Form method="PATCH" className="text-right">
       <Button type="primary">Make Priority</Button>
     </fetcher.Form>
@@ -19,6 +20,8 @@ export default UpdateOrder;
 // Then connect this action to the correct page in App.jsx
 /* dont need access to request here because this form doesnt have any inputs, its only changing
 the priority key, left here to remember that we can grab that data, see the CreateOrder action */
+/* React router knows the data changed because of this action, so it re fetches the data in the
+background and cause a re render */
 export async function action({ request, params }) {
   const data = { priority: true };
   await updateOrder(params.orderId, data);
